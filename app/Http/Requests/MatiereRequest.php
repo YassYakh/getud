@@ -29,7 +29,9 @@ class MatiereRequest extends Request
             'id_prof'   => 'required'
         ];
        }elseif (Request::isMethod('get')) {
-          return [  'search'   => 'required'];
+          return [  'search'   => 'required',
+                    'note'=>'required'
+                    ];
         } else {
            return [
             'Nom'       => 'required|unique:matieres',

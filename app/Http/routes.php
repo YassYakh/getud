@@ -13,6 +13,8 @@
 
 Route::resource('etd','EtudiantController');
 Route::get('mat/chercher','MatiereController@chercher' );
+Route::get('mat/remplie/{mat}','MatiereController@remplie' )->name('mat.remplie');
+Route::get('mat/rempnote','MatiereController@rempnote' )->name('mat.rempnote');
 Route::resource('mat','MatiereController');
 Route::get('prof/chercher','ProfController@chercher' );
 Route::resource('prof','ProfController');

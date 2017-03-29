@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Requests\MatiereRequest;
+use App\Etudiant;
 use App\Matiere;
 use App\Prof;
 class MatiereController extends Controller
@@ -99,10 +100,33 @@ class MatiereController extends Controller
     }
 
    
-  
-
-    public function chercher(MatiereRequest $request){
+      public function chercher(MatiereRequest $request){
         $mat=Matiere::where('Nom', '=',$request->search)->first();
         return view('Matiere.show',compact('mat'));
     }
-}
+
+    public function remplie(Matiere $mat){
+        
+        return view('Matiere.remplie',compact('mat'));
+    }
+    public function rempnote(MatiereRequest $req){
+           
+        $mat=Matiere::find($req->search);
+        $notes =$req->note;
+        $i=0;
+        $msg="";
+        foreach ( $mat->matieres as $etd) {
+            if ($notes[$etd->id]!='Pas encore') {
+                $mat->matieres()->syncWithoutDetaching([$etd->id =>['note'=>$notes[$etd->id]]]);
+                $msg.="\n Affecter ".$notes[$etd->id]." a ".$etd->mail;
+                          /* $etd->pivot->note=$notes[$etd->id];
+                $etd->save();*/
+                $i++;
+            }
+               
+                
+            } 
+           return redirect()->route('mat.show',['mat'=>$mat->id])->with('message',$msg); 
+        }
+    }
+

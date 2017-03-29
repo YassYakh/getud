@@ -5,11 +5,6 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-         @if (Session::has('message'))
-             <div class="alert alert-success">
-                 {{Session::get('message')}}
-             </div>
-         @endif
             <div class="panel panel-default">
                 <div class="panel-heading">Affichage des class</div>
 
@@ -33,23 +28,7 @@
                                     </table>
                          </div>
                        
-                         <div class="col-lg-6">
-                             <h2 class="modal-title" style="text-align: center;">Prof </h2>
-                          @if (count($mat->profs)==0)
-                             <h4 class="alert alert-danger"> 
-                                   <span class="glyphicon glyphicon-ban-circle"></span>
-                                   Aucune Prof est affecter a cette matiere
-                                   </h4>
-                          @else   
-                             <table class="table">                        
-                                <tr> <td class="info">Nom</td> <td class="warning">   {{ $mat->profs->nom}}</td> </tr>
-                                <tr> <td class="info">Prenom</td> <td class="warning">{{ $mat->profs->prenom}}</td> </tr>
-                                <tr> <td class="info">Age</td> <td class="warning">   {{ $mat->profs->age}}</td> </tr>
-                                <tr> <td class="info">Mail</td> <td class="warning">  {{ $mat->profs->mail}}</td> </tr>
-                            </table>
-                        @endif
                         
-                        </div>
                          <div style="align-content: center;"> 
 
                              <h2 class="modal-title" style="text-align: center;">Liste des etudiants</h2> 
@@ -59,8 +38,11 @@
                                    Aucune Prof est affecter a cette matiere
                                    </h4>
                           @else 
-                           {!! link_to_route('mat.remplie','Remplir les notes',[$mat->id],['class'=>'btn btn-link'])!!}
-                             <table class="table"> 
+                          {!! Form::open(['method'=>'GET','route' =>'mat.rempnote'])  !!}  
+
+                          <table class="table"> 
+
+
                            
                          <thead><th>Nom</th><th>Prenom</th><th>Age</th><th>Mail</th> <th>Note</th></thead>
                               @foreach ($mat->matieres as $etd)                       
@@ -69,9 +51,15 @@
                                      <td>  {{ $etd->age   }} </td> 
                                      <td>  {{ $etd->mail  }}</td> 
                                    @if ($etd->pivot->note)
-                                      <td>{{ $etd->pivot->note  }}</td>
+                                      <td>
+                                          <div class="input-group ">
+                                          <input type="text" class="form-control" name="note[{{ $etd->id  }}]" value="{{ $etd->pivot->note  }}" >
+                                      </td>
                                    @else 
-                                      <td style="color: red">  Pas encore </td>
+                                      <td style="color: red"> 
+                                          <input type="text" class="form-control" name="note[{{ $etd->id  }}]" value="Pas encore" >
+                                      
+                                       </td>
                                     @endif
                                     
                                 </tr>
@@ -79,7 +67,23 @@
 
 
                             </table>
-                           
+                             <input type="hidden" name="search" value="{{$mat->id}}">
+                             <span class="input-group-btn">
+                            <button class="btn btn-default-sm" type="submit">
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                    {!! Form::close() !!} 
+                          
+                   @if ($errors->has())
+                <ul class="alert alert-danger">
+                   @foreach ($errors->all() as $error)
+                        <li> {{$error}}</li>
+                    @endforeach 
+
+                </ul>
+            @endif
                         @endif
                         </div>
                         @endif
